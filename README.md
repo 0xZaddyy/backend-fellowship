@@ -8,8 +8,8 @@ This is a basic Node.js project that creates an HTTP server responding with **"H
 ## 📦 Installation
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/simple-http-server.git
-   cd simple-http-server
+   git clone https://github.com/0xzaddy/backend-fellowship.git
+   cd backend-fellowship
    ```
 
 2. (Optional) Initialize a new `npm` project:
@@ -19,7 +19,7 @@ This is a basic Node.js project that creates an HTTP server responding with **"H
 
 3. Run the server:
    ```bash
-   node server.js
+   node index.js
    ```
 
 ## 🚀 Usage
