@@ -1,8 +1,7 @@
-const http = require('http');
-const server = http.createServer((req, res) => {
-    res.writeHead(200, {"content-type": "test/plain"})
-    res.end("Hello, World")
-})
-server.listen(3000,()=>{
-    console.log("Strating server")
-})
+var http = require('http');
+var server = http.createServer(function (req, res) {
+res.write('Hello, World');
+res.end();
+});
+server.listen(8084);
+console.log('Server is running on port 8084');
