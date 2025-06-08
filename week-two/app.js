@@ -1,11 +1,11 @@
 const express = require('express');
 const bodyParse = require('body-parser');
-const { sequelize, Item } = require('./db');
+const { sequelize, Item } = require('./database');
 
 const app = express();
-
 app.use(bodyParse.json());
 
+sequelize.sync();
 
 let items =[
     {id: 1, name: 'item 1' },
@@ -13,46 +13,51 @@ let items =[
 ];
 
 // Create
-app.post('/items', (req, res) => {
-    const newItem = req.body;
-    items.push(newItem);
-    res.status(201).json(newItem);
-
-
+app.post('/items', async (req, res) => {
+    try {
+        const newItem = await Item.create({ name: req.body.name });
+        res.status(201).json(newItem);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // Read
-app.get('/items', (req, res) => {
-    res.json(items);
-})
+app.get('/items', async (req, res) => {
+    try {
+        const items = await Item.findAll();
+        res.json(items);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 // Update
+app.put('/items/:id', async (req, res) => {
+    try {
+        const item = await Item.findByPk(req.params.id);
+        if (!item) return res.status(404).json({ error: 'Item not found' });
 
-app.put('/items/:id', (req, res) => {
-    const itemId = parseInt(req.params.id);
-    const  UpdatedItem =req.body;
-
-    items = items.map(item =>  (item.id === itemId ? UpdatedItem : item) )
-
-    res.json(UpdatedItem);
+        item.name = req.body.name;
+        await item.save();
+        res.json(item);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // Delete
+app.delete('/items/:id', async (req, res) => {
+    try {
+        const item = await Item.findByPk(req.params.id);
+        if (!item) return res.status(404).json({ error: 'Item not found' });
 
-app.delete('items/:id', (req, res) => {
-   const itemId = parseInt(req.params.id);
-   items = items.filter(item => item.id !== itemId );
-
-   res.sendStatus(204);
+        await item.destroy();
+        res.sendStatus(204);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-
-
 const PORT = 8080;
-
-
-app.listen(
-    PORT,
-    () => console.log(`it Alive on port https://localhost:${PORT}`)
-
-)
+app.listen(PORT, () => console.log(`It's alive on http://localhost:${PORT}`));
